@@ -1,14 +1,23 @@
 package TDD;
 
-class Dollar {
+class Dollar extends Money{
 	  private int amount;
-	   Dollar(int amount) {
-	      this.amount= amount;
+	  private String currency;
+	
+		
+	   Money times(int multiplier)  {
+	      return Money.dollar(amount * multiplier);
 	   }
 	   
-	   Money times(int multiplier)  {
-		      return new Dollar(amount * multiplier);
-		   }	
+	   Dollar(int amount, String currency)  {
+		      super(amount, currency);
+		   }
+	   String currency() {
+	      return currency;
+	   }
+		
+	   
+	  
 	   public void testMultiplication() {
 		   Money five = Money.dollar(5);
 		   assertEquals(Money.dollar(10), five.times(2));
@@ -37,34 +46,62 @@ class Dollar {
 	}
 abstract class Money  {
 	   protected int amount;
-	   
+	   private String currency; 
+
+	   static Money dollar(int amount)  {
+	      return new Dollar(amount, "USD");
+	   }
+
+	   static Money franc(int amount) {
+	      return new Franc(amount, "CHF");
+	   }
+
+	   Money(int amount, String currency) {
+	      this.amount = amount;
+	      this.currency = currency;
+	   }
+	 
+		   
+	   String currency() {
+		      return currency;
+		   }
+	   Money times(int multiplier)  {
+		      return Money.franc(amount * multiplier);
+		   }		
 	   public boolean equals(Object object) {
 		      Money money = (Money) object;
 		      return amount == money.amount && getClass().equals(money.getClass());
 		   }   
-	   static Money dollar(int amount)  {
-		      return new Dollar(amount);
-		   }
-		   
-		   static Money franc(int amount) {
-		      return new Franc(amount);
-		    }
-
+	  
+		   public void testCurrency() {
+			   assertEquals("USD", Money.dollar(1).currency());
+			   assertEquals("CHF", Money.franc(1).currency());
+			}
 			
-		   abstract Money times(int multiplier); 
+		
+			
+		  
+		   
+		
 		   
 	}
 
-class Franc {   
+class Franc extends Money {   
 	   private int amount;					
-	   Franc(int amount) {      
-	      this.amount= amount;
-	    }					
-	   Money times(int multiplier)  {
-		      return new Franc(amount * multiplier);
-		   }	
+	  					
 	    public boolean equals(Object object) {					
 	       Franc franc = (Franc) object;      
 	       return amount == franc.amount;					
 	     }					
+	    String currency() {
+	        return "CHF";
+	     }
+	    
+	    Franc(int amount, String currency) {
+	        super(amount, currency);
+	     }
+	       
+	     Money times(int multiplier)  {
+	        return Money.franc(amount * multiplier);
+	     }
 	}
